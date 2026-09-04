@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
@@ -11,8 +11,11 @@ Future<bool> enableContextMenu() async {
   }
 
   try {
+    final String targetFolder = File(_getWindowsFilePath(_windowsFileName)).parent.path;
     final String script =
         '''
+\$TargetFolder = "$targetFolder"
+if (-not (Test-Path \$TargetFolder)) { New-Item -ItemType Directory -Path \$TargetFolder -Force | Out-Null }
 \$TargetPath = "${Platform.resolvedExecutable}"
 \$ShortcutFile = "${_getWindowsFilePath(_windowsFileName)}"
 \$WScriptShell = New-Object -ComObject WScript.Shell

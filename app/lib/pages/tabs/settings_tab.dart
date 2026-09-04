@@ -539,9 +539,35 @@ class SettingsTab extends StatelessWidget {
                   label: t.settingsTab.other.privacyPolicy,
                   buttonLabel: t.general.open,
                   onTap: () async {
-                    await launchUrl(
-                      Uri.parse('https://localsend.org/privacy'),
-                      mode: LaunchMode.externalApplication,
+                    await showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: Text(t.settingsTab.other.privacyPolicy),
+                        content: const SingleChildScrollView(
+                          child: Text(
+                            'MySender is 100% peer-to-peer and privacy-first.\n\n'
+                            '• No personal data is collected or tracked.\n'
+                            '• All file transfers occur strictly over your local network.\n'
+                            '• End-to-end encrypted with TLS.\n'
+                            '• 100% open-source and ad-free.',
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () async {
+                              await launchUrl(
+                                Uri.parse('https://github.com/saferill/MySender/blob/main/PRIVACY.md'),
+                                mode: LaunchMode.externalApplication,
+                              );
+                            },
+                            child: const Text('GitHub'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.of(ctx).pop(),
+                            child: Text(t.general.close),
+                          ),
+                        ],
+                      ),
                     );
                   },
                 ),

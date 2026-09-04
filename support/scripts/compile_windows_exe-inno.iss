@@ -12,9 +12,9 @@
 #endif
 
 #define MyAppName "MySender"
-#define MyAppVersion "1.18.2"
+#define MyAppVersion "1.0.0"
 #define MyAppPublisher "MySender"
-#define MyAppURL "https://localsend.org"
+#define MyAppURL "https://github.com/saferill/MySender"
 #define MyAppExeName "localsend_app.exe"
 #define MyAppMsixHelper "localsend_msix_helper.msix"
 
