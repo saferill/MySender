@@ -65,11 +65,11 @@ jobs:
         run: iscc /DSkipSignTool /DSkipMsixHelper "/DPayloadDir=${{ runner.temp }}\inno" "/DResultDir=${{ runner.temp }}\inno-result" support\scripts\compile_windows_exe-inno.iss
 
       - name: Rename installer
-        run: Rename-Item -Path "${{ runner.temp }}\inno-result\localsend.exe" -NewName "LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.exe"
+        run: Rename-Item -Path "${{ runner.temp }}\inno-result\mysender.exe" -NewName "MySender-${{ needs.build.outputs.version }}-windows-x86-64.exe"
 
       - name: Upload installer
         uses: actions/upload-artifact@v6
         with:
           name: windows-exe-x86-64-unsigned
-          path: ${{ runner.temp }}\inno-result\LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.exe
+          path: ${{ runner.temp }}\inno-result\MySender-${{ needs.build.outputs.version }}-windows-x86-64.exe
           if-no-files-found: error
