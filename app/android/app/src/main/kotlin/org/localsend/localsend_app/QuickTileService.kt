@@ -1,5 +1,6 @@
 package org.localsend.localsend_app
 
+import com.mysender.app.R
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.PendingIntent
