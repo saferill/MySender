@@ -8,7 +8,7 @@ Everything is transferred peer-to-peer with TLS encryption, straight from device
 
 ## Downloads
 
-Download pre-built binaries from the [Releases](https://github.com/saferill/MySender/releases/latest) page.
+Download pre-built binaries from the [Releases](https://github.com/saferill/MySender/releases/latest) page. Windows binaries code signing is provided by the [SignPath Foundation](https://signpath.org).
 
 | Platform | Format | Description |
 | :--- | :--- | :--- |
