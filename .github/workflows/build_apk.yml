@@ -82,7 +82,7 @@ jobs:
 
       - name: Build APK
         working-directory: ${{ env.APK_BUILD_DIR }}/app
-        run: flutter build apk --split-per-abi
+        run: flutter build apk --split-per-abi --obfuscate --split-debug-info=symbols
 
       - name: Upload APK
         uses: actions/upload-artifact@v6
