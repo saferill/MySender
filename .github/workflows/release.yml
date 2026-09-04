@@ -79,7 +79,7 @@ jobs:
         run: flutter build apk --split-per-abi
 
       - name: Upload APK
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: apk-result
           path: |
@@ -127,7 +127,7 @@ jobs:
           tar -czvf ../../../../../result.tar.gz *
 
       - name: Upload tar.gz archive
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: tar-gz-x86-64-result
           path: ./app/*.tar.gz
@@ -174,7 +174,7 @@ jobs:
           tar -czvf ../../../../../result.tar.gz *
 
       - name: Upload tar.gz archive
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: tar-gz-arm-64-result
           path: ./app/*.tar.gz
@@ -231,7 +231,7 @@ jobs:
           fi
 
       - name: Upload deb file
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: deb-x86-64-result
           path: ${{ steps.find_deb.outputs.deb_path }}
@@ -287,7 +287,7 @@ jobs:
           fi
 
       - name: Upload deb file
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: deb-arm-64-result
           path: ${{ steps.find_deb.outputs.deb_path }}
@@ -349,7 +349,7 @@ jobs:
           recipe: ./AppImageBuilder.yml
 
       - name: Upload AppImage file
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: appimage-x86-64-result
           path: ./*.AppImage
@@ -413,7 +413,7 @@ jobs:
       # Signing temporarily disabled: the unsigned zip is uploaded as the result
       # - name: Upload unsigned zip
       #   id: unsigned-zip
-      #   uses: actions/upload-artifact@v6
+      #   uses: actions/upload-artifact@v7
       #   with:
       #     name: windows-zip-unsigned
       #     path: app/LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.zip
@@ -439,7 +439,7 @@ jobs:
       #     & $signtool.FullName verify /pa /v verify-portable\localsend_app.exe
 
       - name: Upload zip
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: windows-zip-x86-64-result
           path: app/LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.zip
@@ -523,7 +523,7 @@ jobs:
       # Signing temporarily disabled: the unsigned zip is uploaded as the result
       # - name: Upload unsigned zip
       #   id: unsigned-zip
-      #   uses: actions/upload-artifact@v6
+      #   uses: actions/upload-artifact@v7
       #   with:
       #     name: windows-zip-arm-64-unsigned
       #     path: app/LocalSend-${{ needs.build.outputs.version }}-windows-arm-64.zip
@@ -549,7 +549,7 @@ jobs:
       #     & $signtool.FullName verify /pa /v verify-portable\localsend_app.exe
 
       - name: Upload zip
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: windows-zip-arm-64-result
           path: app/LocalSend-${{ needs.build.outputs.version }}-windows-arm-64.zip
@@ -584,7 +584,7 @@ jobs:
   #     # so CMake bundles the signed msix into the Release directory.
   #     - name: Upload unsigned MSIX helper
   #       id: unsigned-msix
-  #       uses: actions/upload-artifact@v6
+  #       uses: actions/upload-artifact@v7
   #       with:
   #         name: windows-msix-helper-unsigned
   #         path: app\windows\localsend_msix_helper.msix
@@ -636,7 +636,7 @@ jobs:
 
   #     - name: Upload unsigned installer
   #       id: unsigned-installer
-  #       uses: actions/upload-artifact@v6
+  #       uses: actions/upload-artifact@v7
   #       with:
   #         name: windows-exe-unsigned
   #         path: ${{ runner.temp }}\inno-result\LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.exe
@@ -661,7 +661,7 @@ jobs:
   #         & $signtool.FullName verify /pa /v "signed\installer\LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.exe"
 
   #     - name: Upload signed installer
-  #       uses: actions/upload-artifact@v6
+  #       uses: actions/upload-artifact@v7
   #       with:
   #         name: windows-exe-x86-64-result
   #         path: signed/installer/LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.exe
@@ -692,7 +692,7 @@ jobs:
         run: tar -czvf LocalSend-CLI-${{ needs.build.outputs.version }}-${{ matrix.suffix }}.tar.gz -C target/release localsend-cli
 
       - name: Upload CLI
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: cli-${{ matrix.suffix }}-result
           path: LocalSend-CLI-${{ needs.build.outputs.version }}-${{ matrix.suffix }}.tar.gz
@@ -730,7 +730,7 @@ jobs:
       # Signing temporarily disabled: the unsigned exe is uploaded as the result
       # - name: Upload unsigned CLI
       #   id: unsigned-cli
-      #   uses: actions/upload-artifact@v6
+      #   uses: actions/upload-artifact@v7
       #   with:
       #     name: windows-cli-exe-${{ matrix.suffix }}-unsigned
       #     path: target\release\LocalSend-CLI-${{ needs.build.outputs.version }}-windows-${{ matrix.suffix }}.exe
@@ -755,7 +755,7 @@ jobs:
       #     & $signtool.FullName verify /pa /v "signed\cli\LocalSend-CLI-${{ needs.build.outputs.version }}-windows-${{ matrix.suffix }}.exe"
 
       - name: Upload CLI
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: windows-cli-exe-${{ matrix.suffix }}-result
           path: target\release\LocalSend-CLI-${{ needs.build.outputs.version }}-windows-${{ matrix.suffix }}.exe

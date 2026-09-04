@@ -79,7 +79,7 @@ jobs:
 
       - name: Upload unsigned zip
         id: unsigned-zip
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: windows-zip-unsigned
           path: app/LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.zip
@@ -105,7 +105,7 @@ jobs:
           & $signtool.FullName verify /pa /v verify-portable\localsend_app.exe
 
       - name: Upload signed zip
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: windows-zip-x86-64-result
           path: signed/portable/LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.zip
