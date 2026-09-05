@@ -89,7 +89,7 @@ jobs:
       - name: Test (signaling server)
         run: cargo test --package server
       - name: Check (plugin crate, CLI)
-        run: cargo check --package rust_lib_localsend_app --package MySender-cli
+        run: cargo check --package rust_lib_localsend_app --package localsend-cli
 
   packaging:
     runs-on: ubuntu-latest

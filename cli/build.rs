@@ -8,7 +8,7 @@ fn main() {
         res.set("CompanyName", "MySender");
         res.set("OriginalFilename", "localsend-cli.exe");
         res.set("InternalName", "localsend-cli");
-        res.set("LegalCopyright", "Copyright (C) 2026 MySender Project");
+        res.set("LegalCopyright", "Copyright (C) 2026 MySender");
         // FileVersion/ProductVersion are derived from CARGO_PKG_VERSION automatically.
         res.compile().expect("failed to compile Windows resources");
     }

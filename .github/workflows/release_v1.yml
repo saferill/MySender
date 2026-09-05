@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  FLUTTER_VERSION: '3.38.3'
+  FLUTTER_VERSION: '3.41.9'
 
 jobs:
   build_windows:
@@ -21,16 +21,17 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
 
       - name: Install Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
-          target: x86_64-pc-windows-msvc
+          targets: x86_64-pc-windows-msvc
 
       - name: Dependencies
-        working-directory: app
-        run: flutter pub get
+        run: |
+          flutter pub get
+          flutter pub get -C packages/localsend_isolates/rust_builder/cargokit/build_tool
 
       - name: Compile Windows App
         working-directory: app
@@ -38,7 +39,7 @@ jobs:
 
       - name: Package Portable ZIP
         run: |
-          mkdir -p windows-output
+          mkdir windows-output
           Compress-Archive -Path "app\build\windows\x64\runner\Release\*" -DestinationPath "windows-output\MySender-1.0.0-windows-x86-64-portable.zip"
 
       - name: Install Inno Setup
@@ -50,7 +51,7 @@ jobs:
           Move-Item -Path "support\build\windows\x64\MySender-1.0.0-windows-x86-64.exe" -Destination "windows-output\MySender-1.0.0-windows-x86-64-setup.exe"
 
       - name: Upload Windows Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: windows-binaries
           path: windows-output/*
@@ -72,19 +73,20 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
 
       - name: Install Rust & Android Targets
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
-          target: aarch64-linux-android armv7-linux-androideabi x86_64-linux-android i686-linux-android
+          targets: aarch64-linux-android,armv7-linux-androideabi,x86_64-linux-android,i686-linux-android
 
       - name: Install cargo-ndk
         run: cargo install cargo-ndk
 
       - name: Dependencies
-        working-directory: app
-        run: flutter pub get
+        run: |
+          flutter pub get
+          flutter pub get -C packages/localsend_isolates/rust_builder/cargokit/build_tool
 
       - name: Compile Split APKs
         working-directory: app
@@ -108,7 +110,7 @@ jobs:
           cp app/build/app/outputs/bundle/release/app-release.aab android-output/MySender-1.0.0-android.aab
 
       - name: Upload Android Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: android-binaries
           path: android-output/*
@@ -129,15 +131,15 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
 
       - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Dependencies
-        working-directory: app
-        run: flutter pub get
+        run: |
+          flutter pub get
+          flutter pub get -C packages/localsend_isolates/rust_builder/cargokit/build_tool
 
       - name: Compile Linux App
         working-directory: app
@@ -150,7 +152,7 @@ jobs:
           tar -czvf "$GITHUB_WORKSPACE/linux-output/MySender-1.0.0-linux-x86-64.tar.gz" *
 
       - name: Upload Linux Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: linux-binaries
           path: linux-output/*
@@ -166,16 +168,17 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
 
       - name: Install Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
-          target: aarch64-apple-darwin x86_64-apple-darwin
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
 
       - name: Dependencies
-        working-directory: app
-        run: flutter pub get
+        run: |
+          flutter pub get
+          flutter pub get -C packages/localsend_isolates/rust_builder/cargokit/build_tool
 
       - name: Compile macOS App
         working-directory: app
@@ -189,7 +192,7 @@ jobs:
           hdiutil create -volname "MySender" -srcfolder MySender.app -ov -format UDZO "$GITHUB_WORKSPACE/macos-output/MySender-1.0.0-macos-universal.dmg"
 
       - name: Upload macOS Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: macos-binaries
           path: macos-output/*
@@ -205,16 +208,17 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
 
       - name: Install Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
-          target: aarch64-apple-ios
+          targets: aarch64-apple-ios
 
       - name: Dependencies
-        working-directory: app
-        run: flutter pub get
+        run: |
+          flutter pub get
+          flutter pub get -C packages/localsend_isolates/rust_builder/cargokit/build_tool
 
       - name: Compile iOS App (Unsigned)
         working-directory: app
@@ -229,7 +233,7 @@ jobs:
           rm -rf Payload
 
       - name: Upload iOS Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: ios-binaries
           path: ios-output/*.ipa
@@ -242,31 +246,31 @@ jobs:
       contents: write
     steps:
       - name: Download Windows artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v4
         with:
           name: windows-binaries
           path: release-assets
 
       - name: Download Android artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v4
         with:
           name: android-binaries
           path: release-assets
 
       - name: Download Linux artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v4
         with:
           name: linux-binaries
           path: release-assets
 
       - name: Download macOS artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v4
         with:
           name: macos-binaries
           path: release-assets
 
       - name: Download iOS artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v4
         with:
           name: ios-binaries
           path: release-assets
