@@ -1,4 +1,4 @@
-﻿{
+{
   "appName": "MySender",
   "general": {
     "accept": "Aceptar",
@@ -241,7 +241,7 @@
   "receiveOptionsPage": {
     "title": "Opcións",
     "destination": "@:settingsTab.receive.destination",
-    "appDirectory": "(Cartafol Localsend)",
+    "appDirectory": "(Cartafol MySender)",
     "saveToGallery": "@:settingsTab.receive.saveToGallery",
     "saveToGalleryOff": "Desactivado automáticamente porque hai cartafois."
   },

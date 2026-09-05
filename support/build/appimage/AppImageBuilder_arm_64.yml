@@ -8,9 +8,9 @@ AppDir:
   path: AppDir
   app_info:
     id: org.localsend.localsend_app
-    name: LocalSend
+    name: MySender
     icon: localsend
-    version: 1.18.2
+    version: 1.0.0
     exec: localsend_app
     exec_args: $@
   apt:

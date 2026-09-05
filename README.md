@@ -18,7 +18,11 @@ Download pre-built binaries from the [Releases](https://github.com/saferill/MySe
 | | `armeabi-v7a.apk` | For older 32-bit Android phones |
 | | `x86_64.apk` | For emulators / ChromeOS |
 | | `universal.apk` | All-in-one APK (works on any device) |
+| | `.aab` | Google Play Store bundle |
 | **Linux** | `.tar.gz` | Standalone binary bundle (x86_64) |
+| **macOS** | `.dmg` | Universal installer (Apple Silicon & Intel) |
+| | `.zip` | Portable standalone app |
+| **iOS** | `.ipa` | Sideload package (AltStore / TrollStore) |
 
 ---
 

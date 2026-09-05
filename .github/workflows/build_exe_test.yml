@@ -69,7 +69,7 @@ jobs:
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: ${{ vars.SIGNPATH_ORG_ID }}
-          project-slug: localsend
+          project-slug: mysender
           signing-policy-slug: test-signing
           artifact-configuration-slug: msix-helper
           github-artifact-id: ${{ steps.unsigned-msix.outputs.artifact-id }}
@@ -104,16 +104,16 @@ jobs:
       - name: Compile installer (unsigned)
         run: iscc /DSkipSignTool "/DPayloadDir=${{ runner.temp }}\inno" "/DResultDir=${{ runner.temp }}\inno-result" support\scripts\compile_windows_exe-inno.iss
 
-      # The SignPath artifact configuration expects "LocalSend-*-windows-x86-64.exe"
+      # The SignPath artifact configuration expects "MySender-*-windows-x86-64.exe"
       - name: Rename installer
-        run: Rename-Item -Path "${{ runner.temp }}\inno-result\localsend.exe" -NewName "LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.exe"
+        run: Rename-Item -Path "${{ runner.temp }}\inno-result\MySender.exe" -NewName "MySender-${{ needs.build.outputs.version }}-windows-x86-64.exe"
 
       - name: Upload unsigned installer
         id: unsigned-installer
         uses: actions/upload-artifact@v6
         with:
           name: windows-exe-unsigned
-          path: ${{ runner.temp }}\inno-result\LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.exe
+          path: ${{ runner.temp }}\inno-result\MySender-${{ needs.build.outputs.version }}-windows-x86-64.exe
           if-no-files-found: error
 
       - name: Sign installer (SignPath)
@@ -121,7 +121,7 @@ jobs:
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: ${{ vars.SIGNPATH_ORG_ID }}
-          project-slug: localsend
+          project-slug: mysender
           signing-policy-slug: test-signing
           artifact-configuration-slug: installer
           github-artifact-id: ${{ steps.unsigned-installer.outputs.artifact-id }}
@@ -132,10 +132,10 @@ jobs:
         continue-on-error: true
         run: |
           $signtool = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin\10.*\x64\signtool.exe' | Select-Object -Last 1
-          & $signtool.FullName verify /pa /v "signed\installer\LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.exe"
+          & $signtool.FullName verify /pa /v "signed\installer\MySender-${{ needs.build.outputs.version }}-windows-x86-64.exe"
 
       - name: Upload signed installer
         uses: actions/upload-artifact@v6
         with:
           name: windows-exe-x86-64-result
-          path: signed/installer/LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.exe
+          path: signed/installer/MySender-${{ needs.build.outputs.version }}-windows-x86-64.exe

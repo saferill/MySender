@@ -104,5 +104,5 @@ Filename: "powershell.exe"; Parameters: "-ExecutionPolicy Bypass -Command Add-Ap
 
 [UninstallRun]
 #ifndef SkipMsixHelper
-Filename: "powershell.exe"; Parameters: "-ExecutionPolicy Bypass -Command Get-AppxPackage LocalSend.App | Remove-AppxPackage"; Flags: nowait runhidden
+Filename: "powershell.exe"; Parameters: "-ExecutionPolicy Bypass -Command Get-AppxPackage MySender.App | Remove-AppxPackage"; Flags: nowait runhidden
 #endif

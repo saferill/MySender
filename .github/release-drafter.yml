@@ -7,6 +7,6 @@ template: |
   
   $CHANGES
 
-  [Full Changelog](https://github.com/localsend/localsend/blob/main/app/assets/CHANGELOG.md)
+  [Full Changelog](https://github.com/saferill/MySender/commits/main)
 
-  Windows binaries are signed according to the [Code signing policy](https://github.com/localsend/localsend/blob/main/CODE_SIGNING.md).
+  Windows binaries are signed according to the [Code signing policy](https://github.com/saferill/MySender/blob/main/CODE_SIGNING.md).

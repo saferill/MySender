@@ -99,7 +99,7 @@ impl PairedDevices {
                     }
                     version => anyhow::bail!(
                         "{} has version {version}, but this build supports only version {PAIRED_DEVICES_VERSION}. \
-                         Was it written by a newer LocalSend CLI?",
+                         Was it written by a newer MySender CLI?",
                         path.display()
                     ),
                 }

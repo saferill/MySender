@@ -1,12 +1,6 @@
 # AGENTS.md
 
-LocalSend disallows AI generated contributions unless:
-
-- they are bug fixes or
-- very small or
-- you prove your expertise in your field
-
-This file provides guidance to LLMs when working with code in this repository.
+MySender project guidance for LLMs and developers working with code in this repository.
 
 ## Repository layout
 

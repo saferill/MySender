@@ -334,11 +334,11 @@ jobs:
       - name: Copy logo to AppDir
         run: |
           mkdir -p AppDir/usr/share/icons/hicolor/32x32/apps
-          cp app/assets/img/logo-32.png AppDir/usr/share/icons/hicolor/32x32/apps/localsend.png
+          cp app/assets/img/logo-32.png AppDir/usr/share/icons/hicolor/32x32/apps/MySender.png
           mkdir -p AppDir/usr/share/icons/hicolor/128x128/apps
-          cp app/assets/img/logo-128.png AppDir/usr/share/icons/hicolor/128x128/apps/localsend.png
+          cp app/assets/img/logo-128.png AppDir/usr/share/icons/hicolor/128x128/apps/MySender.png
           mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
-          cp app/assets/img/logo-256.png AppDir/usr/share/icons/hicolor/256x256/apps/localsend.png
+          cp app/assets/img/logo-256.png AppDir/usr/share/icons/hicolor/256x256/apps/MySender.png
 
       - name: Copy Recipe to correct location
         run: cp support/build/appimage/AppImageBuilder_x86_64.yml AppImageBuilder.yml
@@ -405,10 +405,10 @@ jobs:
           Remove-Item build/windows/x64/runner/Release/install_msix_helper.ps1
           Remove-Item build/windows/x64/runner/Release/localsend_app.exe.manifest
 
-      # The SignPath artifact configuration expects "LocalSend-*-windows-*-64.zip" containing "localsend_app.exe"
+      # The SignPath artifact configuration expects "MySender-*-windows-*-64.zip" containing "localsend_app.exe"
       - name: Zip compiled files
         working-directory: app
-        run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath "LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.zip"
+        run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath "MySender-${{ needs.build.outputs.version }}-windows-x86-64.zip"
 
       # Signing temporarily disabled: the unsigned zip is uploaded as the result
       # - name: Upload unsigned zip
@@ -416,7 +416,7 @@ jobs:
       #   uses: actions/upload-artifact@v6
       #   with:
       #     name: windows-zip-unsigned
-      #     path: app/LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.zip
+      #     path: app/MySender-${{ needs.build.outputs.version }}-windows-x86-64.zip
       #     if-no-files-found: error
       #
       # - name: Sign zip (SignPath)
@@ -424,7 +424,7 @@ jobs:
       #   with:
       #     api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
       #     organization-id: ${{ vars.SIGNPATH_ORG_ID }}
-      #     project-slug: localsend
+      #     project-slug: mysender
       #     signing-policy-slug: release-signing
       #     artifact-configuration-slug: portable
       #     github-artifact-id: ${{ steps.unsigned-zip.outputs.artifact-id }}
@@ -434,7 +434,7 @@ jobs:
       # - name: Verify signature
       #   continue-on-error: true
       #   run: |
-      #     Expand-Archive -Path "signed\portable\LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.zip" -DestinationPath verify-portable
+      #     Expand-Archive -Path "signed\portable\MySender-${{ needs.build.outputs.version }}-windows-x86-64.zip" -DestinationPath verify-portable
       #     $signtool = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin\10.*\x64\signtool.exe' | Select-Object -Last 1
       #     & $signtool.FullName verify /pa /v verify-portable\localsend_app.exe
 
@@ -442,7 +442,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: windows-zip-x86-64-result
-          path: app/LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.zip
+          path: app/MySender-${{ needs.build.outputs.version }}-windows-x86-64.zip
           if-no-files-found: error
 
   build_windows_zip_arm_64:
@@ -515,10 +515,10 @@ jobs:
           Remove-Item build/windows/arm64/runner/Release/install_msix_helper.ps1
           Remove-Item build/windows/arm64/runner/Release/localsend_app.exe.manifest
 
-      # The SignPath artifact configuration expects "LocalSend-*-windows-*-64.zip" containing "localsend_app.exe"
+      # The SignPath artifact configuration expects "MySender-*-windows-*-64.zip" containing "localsend_app.exe"
       - name: Zip compiled files
         working-directory: app
-        run: Compress-Archive -Path build/windows/arm64/runner/Release/* -DestinationPath "LocalSend-${{ needs.build.outputs.version }}-windows-arm-64.zip"
+        run: Compress-Archive -Path build/windows/arm64/runner/Release/* -DestinationPath "MySender-${{ needs.build.outputs.version }}-windows-arm-64.zip"
 
       # Signing temporarily disabled: the unsigned zip is uploaded as the result
       # - name: Upload unsigned zip
@@ -526,7 +526,7 @@ jobs:
       #   uses: actions/upload-artifact@v6
       #   with:
       #     name: windows-zip-arm-64-unsigned
-      #     path: app/LocalSend-${{ needs.build.outputs.version }}-windows-arm-64.zip
+      #     path: app/MySender-${{ needs.build.outputs.version }}-windows-arm-64.zip
       #     if-no-files-found: error
       #
       # - name: Sign zip (SignPath)
@@ -534,7 +534,7 @@ jobs:
       #   with:
       #     api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
       #     organization-id: ${{ vars.SIGNPATH_ORG_ID }}
-      #     project-slug: localsend
+      #     project-slug: mysender
       #     signing-policy-slug: release-signing
       #     artifact-configuration-slug: portable
       #     github-artifact-id: ${{ steps.unsigned-zip.outputs.artifact-id }}
@@ -544,7 +544,7 @@ jobs:
       # - name: Verify signature
       #   continue-on-error: true
       #   run: |
-      #     Expand-Archive -Path "signed\portable\LocalSend-${{ needs.build.outputs.version }}-windows-arm-64.zip" -DestinationPath verify-portable
+      #     Expand-Archive -Path "signed\portable\MySender-${{ needs.build.outputs.version }}-windows-arm-64.zip" -DestinationPath verify-portable
       #     $signtool = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin\10.*\arm64\signtool.exe' | Select-Object -Last 1
       #     & $signtool.FullName verify /pa /v verify-portable\localsend_app.exe
 
@@ -552,7 +552,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: windows-zip-arm-64-result
-          path: app/LocalSend-${{ needs.build.outputs.version }}-windows-arm-64.zip
+          path: app/MySender-${{ needs.build.outputs.version }}-windows-arm-64.zip
           if-no-files-found: error
 
   # Installer temporarily disabled: releasing without code signing for now
@@ -595,7 +595,7 @@ jobs:
   #       with:
   #         api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
   #         organization-id: ${{ vars.SIGNPATH_ORG_ID }}
-  #         project-slug: localsend
+  #         project-slug: mysender
   #         signing-policy-slug: release-signing
   #         artifact-configuration-slug: msix-helper
   #         github-artifact-id: ${{ steps.unsigned-msix.outputs.artifact-id }}
@@ -630,16 +630,16 @@ jobs:
   #     - name: Compile installer (unsigned)
   #       run: iscc /DSkipSignTool "/DPayloadDir=${{ runner.temp }}\inno" "/DResultDir=${{ runner.temp }}\inno-result" support\scripts\compile_windows_exe-inno.iss
 
-  #     # The SignPath artifact configuration expects "LocalSend-*-windows-x86-64.exe"
+  #     # The SignPath artifact configuration expects "MySender-*-windows-x86-64.exe"
   #     - name: Rename installer
-  #       run: Rename-Item -Path "${{ runner.temp }}\inno-result\localsend.exe" -NewName "LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.exe"
+  #       run: Rename-Item -Path "${{ runner.temp }}\inno-result\MySender.exe" -NewName "MySender-${{ needs.build.outputs.version }}-windows-x86-64.exe"
 
   #     - name: Upload unsigned installer
   #       id: unsigned-installer
   #       uses: actions/upload-artifact@v6
   #       with:
   #         name: windows-exe-unsigned
-  #         path: ${{ runner.temp }}\inno-result\LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.exe
+  #         path: ${{ runner.temp }}\inno-result\MySender-${{ needs.build.outputs.version }}-windows-x86-64.exe
   #         if-no-files-found: error
 
   #     - name: Sign installer (SignPath)
@@ -647,7 +647,7 @@ jobs:
   #       with:
   #         api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
   #         organization-id: ${{ vars.SIGNPATH_ORG_ID }}
-  #         project-slug: localsend
+  #         project-slug: mysender
   #         signing-policy-slug: release-signing
   #         artifact-configuration-slug: installer
   #         github-artifact-id: ${{ steps.unsigned-installer.outputs.artifact-id }}
@@ -658,13 +658,13 @@ jobs:
   #       continue-on-error: true
   #       run: |
   #         $signtool = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin\10.*\x64\signtool.exe' | Select-Object -Last 1
-  #         & $signtool.FullName verify /pa /v "signed\installer\LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.exe"
+  #         & $signtool.FullName verify /pa /v "signed\installer\MySender-${{ needs.build.outputs.version }}-windows-x86-64.exe"
 
   #     - name: Upload signed installer
   #       uses: actions/upload-artifact@v6
   #       with:
   #         name: windows-exe-x86-64-result
-  #         path: signed/installer/LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.exe
+  #         path: signed/installer/MySender-${{ needs.build.outputs.version }}-windows-x86-64.exe
 
   build_cli_linux:
     needs: build
@@ -685,17 +685,17 @@ jobs:
         run: rustup toolchain install # version from rust-toolchain.toml
 
       - name: Compile CLI
-        run: cargo build --release --package localsend-cli
+        run: cargo build --release --package MySender-cli
 
       # tar preserves the executable bit, which a bare artifact upload would lose
       - name: Create tar.gz archive
-        run: tar -czvf LocalSend-CLI-${{ needs.build.outputs.version }}-${{ matrix.suffix }}.tar.gz -C target/release localsend-cli
+        run: tar -czvf MySender-CLI-${{ needs.build.outputs.version }}-${{ matrix.suffix }}.tar.gz -C target/release MySender-cli
 
       - name: Upload CLI
         uses: actions/upload-artifact@v6
         with:
           name: cli-${{ matrix.suffix }}-result
-          path: LocalSend-CLI-${{ needs.build.outputs.version }}-${{ matrix.suffix }}.tar.gz
+          path: MySender-CLI-${{ needs.build.outputs.version }}-${{ matrix.suffix }}.tar.gz
           if-no-files-found: error
 
   build_cli_windows_exe:
@@ -721,11 +721,11 @@ jobs:
         run: rustup toolchain install # version from rust-toolchain.toml
 
       - name: Compile CLI
-        run: cargo build --release --package localsend-cli
+        run: cargo build --release --package MySender-cli
 
-      # The SignPath artifact configuration expects "LocalSend-CLI-*-windows-*-64.exe"
+      # The SignPath artifact configuration expects "MySender-CLI-*-windows-*-64.exe"
       - name: Rename CLI executable
-        run: Rename-Item -Path "target\release\localsend-cli.exe" -NewName "LocalSend-CLI-${{ needs.build.outputs.version }}-windows-${{ matrix.suffix }}.exe"
+        run: Rename-Item -Path "target\release\MySender-cli.exe" -NewName "MySender-CLI-${{ needs.build.outputs.version }}-windows-${{ matrix.suffix }}.exe"
 
       # Signing temporarily disabled: the unsigned exe is uploaded as the result
       # - name: Upload unsigned CLI
@@ -733,7 +733,7 @@ jobs:
       #   uses: actions/upload-artifact@v6
       #   with:
       #     name: windows-cli-exe-${{ matrix.suffix }}-unsigned
-      #     path: target\release\LocalSend-CLI-${{ needs.build.outputs.version }}-windows-${{ matrix.suffix }}.exe
+      #     path: target\release\MySender-CLI-${{ needs.build.outputs.version }}-windows-${{ matrix.suffix }}.exe
       #     if-no-files-found: error
       #
       # - name: Sign CLI (SignPath)
@@ -741,7 +741,7 @@ jobs:
       #   with:
       #     api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
       #     organization-id: ${{ vars.SIGNPATH_ORG_ID }}
-      #     project-slug: localsend
+      #     project-slug: mysender
       #     signing-policy-slug: release-signing
       #     artifact-configuration-slug: cli
       #     github-artifact-id: ${{ steps.unsigned-cli.outputs.artifact-id }}
@@ -752,13 +752,13 @@ jobs:
       #   continue-on-error: true
       #   run: |
       #     $signtool = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin\10.*\${{ matrix.signtool_arch }}\signtool.exe' | Select-Object -Last 1
-      #     & $signtool.FullName verify /pa /v "signed\cli\LocalSend-CLI-${{ needs.build.outputs.version }}-windows-${{ matrix.suffix }}.exe"
+      #     & $signtool.FullName verify /pa /v "signed\cli\MySender-CLI-${{ needs.build.outputs.version }}-windows-${{ matrix.suffix }}.exe"
 
       - name: Upload CLI
         uses: actions/upload-artifact@v6
         with:
           name: windows-cli-exe-${{ matrix.suffix }}-result
-          path: target\release\LocalSend-CLI-${{ needs.build.outputs.version }}-windows-${{ matrix.suffix }}.exe
+          path: target\release\MySender-CLI-${{ needs.build.outputs.version }}-windows-${{ matrix.suffix }}.exe
           if-no-files-found: error
 
   release:
@@ -806,7 +806,7 @@ jobs:
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           asset_path: app-armeabi-v7a-release.apk
-          asset_name: LocalSend-${{ needs.build.outputs.version }}-android-arm32v7.apk
+          asset_name: MySender-${{ needs.build.outputs.version }}-android-arm32v7.apk
           asset_content_type: application/vnd.android.package-archive
 
       - name: Upload Release Asset (arm64v8)
@@ -816,7 +816,7 @@ jobs:
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           asset_path: app-arm64-v8a-release.apk
-          asset_name: LocalSend-${{ needs.build.outputs.version }}-android-arm64v8.apk
+          asset_name: MySender-${{ needs.build.outputs.version }}-android-arm64v8.apk
           asset_content_type: application/vnd.android.package-archive
 
       - name: Upload Release Asset (x64)
@@ -826,7 +826,7 @@ jobs:
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           asset_path: app-x86_64-release.apk
-          asset_name: LocalSend-${{ needs.build.outputs.version }}-android-x64.apk
+          asset_name: MySender-${{ needs.build.outputs.version }}-android-x64.apk
           asset_content_type: application/vnd.android.package-archive
 
       # TAR.GZ (x86_64)
@@ -849,7 +849,7 @@ jobs:
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           asset_path: result.tar.gz
-          asset_name: LocalSend-${{ needs.build.outputs.version }}-linux-x86-64.tar.gz
+          asset_name: MySender-${{ needs.build.outputs.version }}-linux-x86-64.tar.gz
           asset_content_type: application/gzip
 
       # TAR.GZ (arm_64)
@@ -872,7 +872,7 @@ jobs:
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           asset_path: result.tar.gz
-          asset_name: LocalSend-${{ needs.build.outputs.version }}-linux-arm-64.tar.gz
+          asset_name: MySender-${{ needs.build.outputs.version }}-linux-arm-64.tar.gz
           asset_content_type: application/gzip
 
       # DEB (x86_64)
@@ -892,7 +892,7 @@ jobs:
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           asset_path: result.deb
-          asset_name: LocalSend-${{ needs.build.outputs.version }}-linux-x86-64.deb
+          asset_name: MySender-${{ needs.build.outputs.version }}-linux-x86-64.deb
           asset_content_type: application/vnd.debian.binary-package
 
       # DEB (arm_64)
@@ -912,7 +912,7 @@ jobs:
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           asset_path: result.deb
-          asset_name: LocalSend-${{ needs.build.outputs.version }}-linux-arm-64.deb
+          asset_name: MySender-${{ needs.build.outputs.version }}-linux-arm-64.deb
           asset_content_type: application/vnd.debian.binary-package
 
       # APPIMAGE (x86_64)
@@ -940,7 +940,7 @@ jobs:
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           asset_path: result.AppImage
-          asset_name: LocalSend-${{ needs.build.outputs.version }}-linux-x86-64.AppImage
+          asset_name: MySender-${{ needs.build.outputs.version }}-linux-x86-64.AppImage
           asset_content_type: application/x-appimage
 
       # WINDOWS ZIP (x86_64)
@@ -960,7 +960,7 @@ jobs:
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           asset_path: result.zip
-          asset_name: LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.zip
+          asset_name: MySender-${{ needs.build.outputs.version }}-windows-x86-64.zip
           asset_content_type: application/zip
 
       # WINDOWS ZIP (arm_64, signed via SignPath)
@@ -980,7 +980,7 @@ jobs:
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           asset_path: result.zip
-          asset_name: LocalSend-${{ needs.build.outputs.version }}-windows-arm-64.zip
+          asset_name: MySender-${{ needs.build.outputs.version }}-windows-arm-64.zip
           asset_content_type: application/zip
 
       # WINDOWS EXE (x86_64, signed via SignPath) — installer temporarily disabled
@@ -1000,7 +1000,7 @@ jobs:
       #   with:
       #     upload_url: ${{ steps.draft_release.outputs.upload_url }}
       #     asset_path: result.exe
-      #     asset_name: LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.exe
+      #     asset_name: MySender-${{ needs.build.outputs.version }}-windows-x86-64.exe
       #     asset_content_type: application/vnd.microsoft.portable-executable
 
       # LINUX CLI (x86_64)
@@ -1016,8 +1016,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
-          asset_path: cli-linux-x86-64-result/LocalSend-CLI-${{ needs.build.outputs.version }}-linux-x86-64.tar.gz
-          asset_name: LocalSend-CLI-${{ needs.build.outputs.version }}-linux-x86-64.tar.gz
+          asset_path: cli-linux-x86-64-result/MySender-CLI-${{ needs.build.outputs.version }}-linux-x86-64.tar.gz
+          asset_name: MySender-CLI-${{ needs.build.outputs.version }}-linux-x86-64.tar.gz
           asset_content_type: application/gzip
 
       # LINUX CLI (arm_64)
@@ -1033,8 +1033,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
-          asset_path: cli-linux-arm-64-result/LocalSend-CLI-${{ needs.build.outputs.version }}-linux-arm-64.tar.gz
-          asset_name: LocalSend-CLI-${{ needs.build.outputs.version }}-linux-arm-64.tar.gz
+          asset_path: cli-linux-arm-64-result/MySender-CLI-${{ needs.build.outputs.version }}-linux-arm-64.tar.gz
+          asset_name: MySender-CLI-${{ needs.build.outputs.version }}-linux-arm-64.tar.gz
           asset_content_type: application/gzip
 
       # WINDOWS CLI EXE (x86_64, signed via SignPath)
@@ -1054,7 +1054,7 @@ jobs:
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           asset_path: result-cli.exe
-          asset_name: LocalSend-CLI-${{ needs.build.outputs.version }}-windows-x86-64.exe
+          asset_name: MySender-CLI-${{ needs.build.outputs.version }}-windows-x86-64.exe
           asset_content_type: application/vnd.microsoft.portable-executable
 
       # WINDOWS CLI EXE (arm_64, signed via SignPath)
@@ -1074,5 +1074,5 @@ jobs:
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           asset_path: result-cli.exe
-          asset_name: LocalSend-CLI-${{ needs.build.outputs.version }}-windows-arm-64.exe
+          asset_name: MySender-CLI-${{ needs.build.outputs.version }}-windows-arm-64.exe
           asset_content_type: application/vnd.microsoft.portable-executable

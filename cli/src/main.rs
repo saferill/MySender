@@ -26,9 +26,9 @@ pub enum Command {
     },
 }
 
-/// LocalSend CLI
-#[derive(Parser)]
-#[command(name = "localsend-cli", version, about, after_help = HELP_SECTIONS)]
+/// MySender CLI
+#[derive(Parser, Debug)]
+#[command(name = "mysender-cli", version, about, after_help = HELP_SECTIONS)]
 pub struct Args {
     /// Device name shown to other devices [default: config.toml, else the hostname]
     #[arg(long, env = "LOCALSEND_ALIAS")]

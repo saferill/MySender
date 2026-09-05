@@ -1,98 +1,23 @@
-name: Release MySender v1.0.0
+name: Multiplatform Release Build
 
 on:
-  workflow_dispatch:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 env:
-  FLUTTER_VERSION: "3.41.9"
-  APK_BUILD_DIR: "/tmp/build"
+  FLUTTER_VERSION: '3.38.3'
 
 jobs:
   build_windows:
-    name: Build Windows (EXE & ZIP)
+    name: Build Windows Binaries
     runs-on: windows-latest
     steps:
-      - name: Fix long file paths
-        run: git config --system core.longpaths true
-
-      - name: Checkout repository
-        uses: actions/checkout@v6
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
       - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-          channel: "stable"
-
-      - name: Build MSIX helper
-        run: |
-          $makepri = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin\10.*\x64\makepri.exe' | Select-Object -Last 1
-          & $makepri.FullName new /pr support\build\msix\content /cf support\build\msix\priconfig.xml /mn support\build\msix\content\AppxManifest.xml /of support\build\msix\content\resources.pri /o
-          & 'C:\Program Files (x86)\Windows Kits\10\App Certification Kit\makeappx.exe' pack /o /d support\build\msix\content /nv /p app\windows\localsend_msix_helper.msix
-
-      - name: Dependencies
-        working-directory: app
-        run: flutter pub get
-
-      - name: Compile for Windows
-        working-directory: app
-        run: flutter build windows
-
-      - name: Create Portable ZIP
-        run: |
-          Compress-Archive -Path "app\build\windows\x64\runner\Release\*" -DestinationPath "MySender-1.0.0-windows-x86-64.zip" -Force
-
-      - name: Build Inno Setup Installer
-        run: |
-          New-Item -ItemType Directory -Force -Path "${{ runner.temp }}\inno" | Out-Null
-          Copy-Item -Path "app\build\windows\x64\runner\Release\*" -Destination "${{ runner.temp }}\inno" -Recurse
-          Copy-Item -Path "app\assets\packaging\logo.ico" -Destination "${{ runner.temp }}\inno"
-          Copy-Item -Path "support\build\windows\x64\*" -Destination "${{ runner.temp }}\inno" -Recurse
-          New-Item -ItemType Directory -Force -Path "${{ runner.temp }}\inno-result" | Out-Null
-          iscc /DSkipSignTool /DSkipMsixHelper "/DPayloadDir=${{ runner.temp }}\inno" "/DResultDir=${{ runner.temp }}\inno-result" support\scripts\compile_windows_exe-inno.iss
-          Move-Item -Path "${{ runner.temp }}\inno-result\mysender.exe" -Destination "MySender-1.0.0-windows-x86-64.exe" -Force
-
-      - name: Upload Windows Artifacts
-        uses: actions/upload-artifact@v6
-        with:
-          name: windows-binaries
-          path: |
-            MySender-1.0.0-windows-x86-64.exe
-            MySender-1.0.0-windows-x86-64.zip
-
-  build_android:
-    name: Build Android (Split APKs & Universal)
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Free Disk Space
-        run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /opt/ghc
-          sudo rm -rf /usr/local/share/boost
-          sudo rm -rf /usr/local/lib/node_modules
-          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
-      - name: Remove proprietary dependencies
-        run: sh support/scripts/remove_proprietary_dependencies.sh
-
-      - name: Copy files to build dir
-        run: |
-          mkdir -p $APK_BUILD_DIR
-          cp -r . $APK_BUILD_DIR
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v5
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
@@ -101,41 +26,101 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+          target: x86_64-pc-windows-msvc
 
       - name: Dependencies
-        working-directory: ${{ env.APK_BUILD_DIR }}/app
+        working-directory: app
         run: flutter pub get
 
-      - name: Build Split per-ABI APKs
-        working-directory: ${{ env.APK_BUILD_DIR }}/app
-        run: flutter build apk --split-per-abi --obfuscate --split-debug-info=symbols
+      - name: Compile Windows App
+        working-directory: app
+        run: flutter build windows --release
 
-      - name: Build Universal APK
-        working-directory: ${{ env.APK_BUILD_DIR }}/app
-        run: flutter build apk --obfuscate --split-debug-info=symbols
+      - name: Package Portable ZIP
+        run: |
+          mkdir -p windows-output
+          Compress-Archive -Path "app\build\windows\x64\runner\Release\*" -DestinationPath "windows-output\MySender-1.0.0-windows-x86-64-portable.zip"
 
-      - name: Rename APKs
+      - name: Install Inno Setup
+        run: choco install innosetup -y
+
+      - name: Compile Windows Installer (.exe)
+        run: |
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /DSkipSignTool /DSkipMsixHelper support\scripts\compile_windows_exe-inno.iss
+          Move-Item -Path "support\build\windows\x64\MySender-1.0.0-windows-x86-64.exe" -Destination "windows-output\MySender-1.0.0-windows-x86-64-setup.exe"
+
+      - name: Upload Windows Artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: windows-binaries
+          path: windows-output/*
+
+  build_android:
+    name: Build Android APKs & AAB
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+
+      - name: Install Rust & Android Targets
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: aarch64-linux-android armv7-linux-androideabi x86_64-linux-android i686-linux-android
+
+      - name: Install cargo-ndk
+        run: cargo install cargo-ndk
+
+      - name: Dependencies
+        working-directory: app
+        run: flutter pub get
+
+      - name: Compile Split APKs
+        working-directory: app
+        run: flutter build apk --split-per-abi
+
+      - name: Compile Universal APK
+        working-directory: app
+        run: flutter build apk
+
+      - name: Compile App Bundle (.aab)
+        working-directory: app
+        run: flutter build appbundle
+
+      - name: Collect Android Binaries
         run: |
           mkdir -p android-output
-          cp ${{ env.APK_BUILD_DIR }}/app/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk android-output/MySender-1.0.0-android-arm64-v8a.apk
-          cp ${{ env.APK_BUILD_DIR }}/app/build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk android-output/MySender-1.0.0-android-armeabi-v7a.apk
-          cp ${{ env.APK_BUILD_DIR }}/app/build/app/outputs/flutter-apk/app-x86_64-release.apk android-output/MySender-1.0.0-android-x86_64.apk
-          cp ${{ env.APK_BUILD_DIR }}/app/build/app/outputs/flutter-apk/app-release.apk android-output/MySender-1.0.0-android-universal.apk
+          cp app/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk android-output/MySender-1.0.0-android-arm64-v8a.apk
+          cp app/build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk android-output/MySender-1.0.0-android-armeabi-v7a.apk
+          cp app/build/app/outputs/flutter-apk/app-x86_64-release.apk android-output/MySender-1.0.0-android-x86_64.apk
+          cp app/build/app/outputs/flutter-apk/app-release.apk android-output/MySender-1.0.0-android-universal.apk
+          cp app/build/app/outputs/bundle/release/app-release.aab android-output/MySender-1.0.0-android.aab
 
       - name: Upload Android Artifacts
         uses: actions/upload-artifact@v6
         with:
           name: android-binaries
-          path: android-output/*.apk
+          path: android-output/*
 
   build_linux:
-    name: Build Linux (AppImage, DEB, Tar.gz)
-    runs-on: ubuntu-22.04
+    name: Build Linux Binaries
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - name: Install Linux dependencies
+      - name: Install Linux Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y clang cmake libgtk-3-dev ninja-build libayatana-appindicator3-dev
@@ -154,13 +139,13 @@ jobs:
         working-directory: app
         run: flutter pub get
 
-      - name: Compile Linux
+      - name: Compile Linux App
         working-directory: app
-        run: flutter build linux
+        run: flutter build linux --release
 
-      - name: Create Tar.gz & Packages
+      - name: Create Tar.gz Bundle
         run: |
-          mkdir -p "$GITHUB_WORKSPACE/linux-output"
+          mkdir -p linux-output
           cd app/build/linux/x64/release/bundle
           tar -czvf "$GITHUB_WORKSPACE/linux-output/MySender-1.0.0-linux-x86-64.tar.gz" *
 
@@ -170,9 +155,88 @@ jobs:
           name: linux-binaries
           path: linux-output/*
 
+  build_macos:
+    name: Build macOS DMG & ZIP
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: aarch64-apple-darwin x86_64-apple-darwin
+
+      - name: Dependencies
+        working-directory: app
+        run: flutter pub get
+
+      - name: Compile macOS App
+        working-directory: app
+        run: flutter build macos --release
+
+      - name: Package macOS DMG & ZIP
+        run: |
+          mkdir -p macos-output
+          cd app/build/macos/Build/Products/Release
+          zip -r "$GITHUB_WORKSPACE/macos-output/MySender-1.0.0-macos-universal.zip" MySender.app
+          hdiutil create -volname "MySender" -srcfolder MySender.app -ov -format UDZO "$GITHUB_WORKSPACE/macos-output/MySender-1.0.0-macos-universal.dmg"
+
+      - name: Upload macOS Artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: macos-binaries
+          path: macos-output/*
+
+  build_ios:
+    name: Build iOS IPA (Unsigned / Sideload)
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: aarch64-apple-ios
+
+      - name: Dependencies
+        working-directory: app
+        run: flutter pub get
+
+      - name: Compile iOS App (Unsigned)
+        working-directory: app
+        run: flutter build ios --release --no-codesign
+
+      - name: Package IPA
+        run: |
+          mkdir -p ios-output/Payload
+          cp -r app/build/ios/iphoneos/Runner.app ios-output/Payload/
+          cd ios-output
+          zip -r MySender-1.0.0-ios.ipa Payload
+          rm -rf Payload
+
+      - name: Upload iOS Artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: ios-binaries
+          path: ios-output/*.ipa
+
   publish_release:
     name: Publish GitHub Release
-    needs: [build_windows, build_android, build_linux]
+    needs: [build_windows, build_android, build_linux, build_macos, build_ios]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -195,23 +259,37 @@ jobs:
           name: linux-binaries
           path: release-assets
 
+      - name: Download macOS artifacts
+        uses: actions/download-artifact@v6
+        with:
+          name: macos-binaries
+          path: release-assets
+
+      - name: Download iOS artifacts
+        uses: actions/download-artifact@v6
+        with:
+          name: ios-binaries
+          path: release-assets
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.0
-          name: "MySender 1.0.0"
+          tag_name: ${{ github.ref_name }}
+          name: "MySender ${{ github.ref_name }}"
           draft: false
           prerelease: false
           files: release-assets/*
           body: |
             ## What's Changed
-            - Initial release of MySender (v1.0.0)
+            - Multi-platform release (${{ github.ref_name }})
             - Secure local P2P file sharing across devices
-            - Optimized lightweight builds for Android, Windows, and Linux
+            - Optimized builds for Windows, Android, Linux, macOS, and iOS
 
             ### Downloads:
             - **Windows**: Setup installer (.exe) & Portable (.zip)
-            - **Android**: APKs for arm64, armv7, x86_64, and universal
+            - **Android**: APKs (arm64, armv7, x86_64, universal) & AAB
             - **Linux**: Standalone archive (.tar.gz)
+            - **macOS**: DMG installer & Portable ZIP
+            - **iOS**: Unsigned IPA (for Sideloading / AltStore)
 
-            **Full Changelog**: https://github.com/saferill/MySender/commits/v1.0.0
+            **Full Changelog**: https://github.com/saferill/MySender/commits/${{ github.ref_name }}

@@ -7,15 +7,15 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Publish LocalSend
+      - name: Publish MySender
         uses: vedantmgoyal9/winget-releaser@main
         with:
-          identifier: LocalSend.LocalSend
-          installers-regex: 'LocalSend-(?!CLI-).*\.exe$'
+          identifier: MySender.MySender
+          installers-regex: 'MySender-(?!CLI-).*\.exe$'
           token: ${{ secrets.WINGET_TOKEN }}
-      - name: Publish LocalSend CLI
+      - name: Publish MySender CLI
         uses: vedantmgoyal9/winget-releaser@main
         with:
-          identifier: LocalSend.LocalSend.CLI
-          installers-regex: 'LocalSend-CLI-.*\.exe$'
+          identifier: MySender.MySender.CLI
+          installers-regex: 'MySender-CLI-.*\.exe$'
           token: ${{ secrets.WINGET_TOKEN }}

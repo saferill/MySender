@@ -41,18 +41,18 @@ jobs:
         run: rustup toolchain install # version from rust-toolchain.toml
 
       - name: Compile CLI
-        run: cargo build --release --package localsend-cli
+        run: cargo build --release --package MySender-cli
 
-      # The SignPath artifact configuration expects "LocalSend-CLI-*-windows-*-64.exe"
+      # The SignPath artifact configuration expects "MySender-CLI-*-windows-*-64.exe"
       - name: Rename CLI executable
-        run: Rename-Item -Path "target\release\localsend-cli.exe" -NewName "LocalSend-CLI-${{ needs.build.outputs.version }}-windows-${{ matrix.suffix }}.exe"
+        run: Rename-Item -Path "target\release\MySender-cli.exe" -NewName "MySender-CLI-${{ needs.build.outputs.version }}-windows-${{ matrix.suffix }}.exe"
 
       - name: Upload unsigned CLI
         id: unsigned-cli
         uses: actions/upload-artifact@v6
         with:
           name: windows-cli-exe-${{ matrix.suffix }}-unsigned
-          path: target\release\LocalSend-CLI-${{ needs.build.outputs.version }}-windows-${{ matrix.suffix }}.exe
+          path: target\release\MySender-CLI-${{ needs.build.outputs.version }}-windows-${{ matrix.suffix }}.exe
           if-no-files-found: error
 
       - name: Sign CLI (SignPath)
@@ -60,7 +60,7 @@ jobs:
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: ${{ vars.SIGNPATH_ORG_ID }}
-          project-slug: localsend
+          project-slug: mysender
           signing-policy-slug: test-signing
           artifact-configuration-slug: cli
           github-artifact-id: ${{ steps.unsigned-cli.outputs.artifact-id }}
@@ -71,10 +71,10 @@ jobs:
         continue-on-error: true
         run: |
           $signtool = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin\10.*\${{ matrix.signtool_arch }}\signtool.exe' | Select-Object -Last 1
-          & $signtool.FullName verify /pa /v "signed\cli\LocalSend-CLI-${{ needs.build.outputs.version }}-windows-${{ matrix.suffix }}.exe"
+          & $signtool.FullName verify /pa /v "signed\cli\MySender-CLI-${{ needs.build.outputs.version }}-windows-${{ matrix.suffix }}.exe"
 
       - name: Upload signed CLI
         uses: actions/upload-artifact@v6
         with:
           name: windows-cli-exe-${{ matrix.suffix }}-result
-          path: signed/cli/LocalSend-CLI-${{ needs.build.outputs.version }}-windows-${{ matrix.suffix }}.exe
+          path: signed/cli/MySender-CLI-${{ needs.build.outputs.version }}-windows-${{ matrix.suffix }}.exe

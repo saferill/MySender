@@ -1,6 +1,6 @@
 VERSION=$(sed -n 's/^version: \([0-9]*\.[0-9]*\.[0-9]*\).*/\1/p' app/pubspec.yaml)
-ARM_NAME="LocalSend-CLI-$VERSION-macos-arm-64"
-X64_NAME="LocalSend-CLI-$VERSION-macos-x86-64"
+ARM_NAME="MySender-CLI-$VERSION-macos-arm-64"
+X64_NAME="MySender-CLI-$VERSION-macos-x86-64"
 
 rustup target add aarch64-apple-darwin x86_64-apple-darwin
 

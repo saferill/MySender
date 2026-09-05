@@ -1,11 +1,11 @@
 {
-  "name": "localsend_app",
-  "short_name": "localsend_app",
+  "name": "MySender",
+  "short_name": "MySender",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#0175C2",
   "theme_color": "#0175C2",
-  "description": "A new Flutter project.",
+  "description": "MySender - Open source cross-platform file sharing",
   "orientation": "portrait-primary",
   "prefer_related_applications": false,
   "icons": [

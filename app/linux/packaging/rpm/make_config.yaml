@@ -1,23 +1,21 @@
-display_name: LocalSend
-packager: Tienisto
-packagerEmail: dev.tien.donam@gmail.com
-url: https://localsend.org
-buildArch: x86_64
-license: MIT
-
+display_name: MySender
+package_name: mysender
+version: null
+maintainer:
+  name: Tienisto
+  email: dev.tien.donam@gmail.com
+license: Apache-2.0
+url: https://github.com/saferill/MySender
 icon: assets/img/logo-512.png
-
-requires:
-  - libappindicator
-  - xdg-user-dirs
-
-keywords:
-  - Sharing
-  - LAN
-  - Files
-
-generic_name: An open source cross-platform alternative to AirDrop
-summary: Share files easily with LocalSend
+desktop:
+  Name: MySender
+  GenericName: An open-source cross-platform alternative to AirDrop
+  Comment: An open-source cross-platform alternative to AirDrop
+  Categories: Network;Utility;
+  Terminal: false
+  StartupNotify: false
+  Keywords: file;sharing;airdrop;transfer;share;cross-platform;
+summary: Share files easily with MySender
 group: Applications/Utilities
 
 categories:

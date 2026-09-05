@@ -1,16 +1,10 @@
-# Contributing to LocalSend
+# Contributing to MySender
 
-LocalSend is an open-source project, and we welcome contributions from anyone who is interested in helping improve the app. Whether you're a developer, a translator, or a documentation writer, there are many ways to get involved.
-
-LocalSend disallows AI generated contributions unless:
-
-- they are bug fixes or
-- very small or
-- you prove your expertise in your field
+MySender is an open-source project, and we welcome contributions from anyone who is interested in helping improve the app. Whether you're a developer, a translator, or a documentation writer, there are many ways to get involved.
 
 ## Getting Started
 
-If you're interested in contributing code to LocalSend, you'll need to follow these steps:
+If you're interested in contributing code to MySender, you'll need to follow these steps:
 
 ## Run
 
@@ -29,8 +23,8 @@ You can help in translating this app to other languages!
 
 1. Fork this repository
 2. Choose one
-   - Add missing translations in existing languages: Only update `_missing_translations_<locale>.json` in [assets/i18n](https://github.com/localsend/localsend/tree/main/app/assets/i18n)
-   - Fix existing translations: Update `strings_<locale>.i18n.json` in [assets/i18n](https://github.com/localsend/localsend/tree/main/app/assets/i18n)
+   - Add missing translations in existing languages: Only update `_missing_translations_<locale>.json` in [assets/i18n](https://github.com/saferill/MySender/tree/main/app/assets/i18n)
+   - Fix existing translations: Update `strings_<locale>.i18n.json` in [assets/i18n](https://github.com/saferill/MySender/tree/main/app/assets/i18n)
    - Add new languages: Create a new file, see also: [locale codes](https://saimana.com/list-of-country-locale-code/).
 3. Optional: Re-run this app
    1. Run `cd app` to enter the app directory.
@@ -41,11 +35,9 @@ You can help in translating this app to other languages!
 
 **_Take note:_ Fields decorated with `@` are not meant to be translated, they are not used in the app in any way, being merely informative text about the file or to give context to the translator.**
 
-Thanks to all [translators](https://github.com/localsend/localsend/tree/main/app/lib/pages/about/translators.dart)!
-
 ## Contributing Guidelines
 
-Before you submit a pull request to LocalSend, please ensure that you have followed these guidelines:
+Before you submit a pull request to MySender, please ensure that you have followed these guidelines:
 
 - Code should be well-documented and formatted according to the [Dart Style Guide](https://dart.dev/guides/language/effective-dart/style).
 - All changes should be covered by tests.
@@ -54,11 +46,8 @@ Before you submit a pull request to LocalSend, please ensure that you have follo
 
 ## Bug Reports and Feature Requests
 
-If you encounter a bug in LocalSend or have a feature request, please submit an issue to the [issue tracker](https://github.com/localsend/localsend/issues). Please be sure to provide a clear description of the problem or feature request, along with any relevant context or steps to reproduce the issue.
+If you encounter a bug in MySender or have a feature request, please submit an issue to the [issue tracker](https://github.com/saferill/MySender/issues). Please be sure to provide a clear description of the problem or feature request, along with any relevant context or steps to reproduce the issue.
 
-## Security Issues
-
-If you discover a security issue in LocalSend, please do not submit an issue to the public issue tracker. Instead, please email us directly at [support@localsend.org](mailto:support@localsend.org) so that we can address the issue as quickly and effectively as possible.
 
 ## Distribution
 
@@ -133,7 +122,7 @@ Binary distribution:
 
 TODO:
 
-You can help in publishing LocalSend on more platforms. Please create an issue to notify us!
+You can help in publishing MySender on more platforms. Please create an issue to notify us!
 
 - Traditional Linux distributions (Debian, Fedora, etc.)
 - (Your idea here)
@@ -201,6 +190,6 @@ flutter doctor
 
 Next, follow the instructions to set up the GitHub runner.
 
-Start the "Release Draft" workflow from the "Actions" tab: https://github.com/localsend/localsend/actions/workflows/release.yml
+Start the "Release Draft" workflow from the "Actions" tab: https://github.com/saferill/MySender/actions/workflows/release_v1.yml
 
 Finally, compile binaries not yet supported by the pipeline.

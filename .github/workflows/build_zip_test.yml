@@ -72,17 +72,17 @@ jobs:
           Remove-Item build/windows/x64/runner/Release/install_msix_helper.ps1
           Remove-Item build/windows/x64/runner/Release/localsend_app.exe.manifest
 
-      # The SignPath artifact configuration expects "LocalSend-*-windows-*-64.zip" containing "localsend_app.exe"
+      # The SignPath artifact configuration expects "MySender-*-windows-*-64.zip" containing "localsend_app.exe"
       - name: Zip compiled files
         working-directory: app
-        run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath "LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.zip"
+        run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath "MySender-${{ needs.build.outputs.version }}-windows-x86-64.zip"
 
       - name: Upload unsigned zip
         id: unsigned-zip
         uses: actions/upload-artifact@v6
         with:
           name: windows-zip-unsigned
-          path: app/LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.zip
+          path: app/MySender-${{ needs.build.outputs.version }}-windows-x86-64.zip
           if-no-files-found: error
 
       - name: Sign zip (SignPath)
@@ -90,7 +90,7 @@ jobs:
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: ${{ vars.SIGNPATH_ORG_ID }}
-          project-slug: localsend
+          project-slug: mysender
           signing-policy-slug: test-signing
           artifact-configuration-slug: portable
           github-artifact-id: ${{ steps.unsigned-zip.outputs.artifact-id }}
@@ -100,7 +100,7 @@ jobs:
       - name: Verify signature
         continue-on-error: true
         run: |
-          Expand-Archive -Path "signed\portable\LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.zip" -DestinationPath verify-portable
+          Expand-Archive -Path "signed\portable\MySender-${{ needs.build.outputs.version }}-windows-x86-64.zip" -DestinationPath verify-portable
           $signtool = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin\10.*\x64\signtool.exe' | Select-Object -Last 1
           & $signtool.FullName verify /pa /v verify-portable\localsend_app.exe
 
@@ -108,4 +108,4 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: windows-zip-x86-64-result
-          path: signed/portable/LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.zip
+          path: signed/portable/MySender-${{ needs.build.outputs.version }}-windows-x86-64.zip
