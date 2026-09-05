@@ -14,6 +14,9 @@ jobs:
     name: Build Windows Binaries
     runs-on: windows-latest
     steps:
+      - name: Fix long file paths
+        run: git config --system core.longpaths true
+
       - name: Checkout Code
         uses: actions/checkout@v4
 
@@ -32,6 +35,12 @@ jobs:
         run: |
           flutter pub get
           flutter pub get -C packages/localsend_isolates/rust_builder/cargokit/build_tool
+
+      - name: Build MSIX helper
+        run: |
+          $makepri = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin\10.*\x64\makepri.exe' | Select-Object -Last 1
+          & $makepri.FullName new /pr support\build\msix\content /cf support\build\msix\priconfig.xml /mn support\build\msix\content\AppxManifest.xml /of support\build\msix\content\resources.pri /o
+          & 'C:\Program Files (x86)\Windows Kits\10\App Certification Kit\makeappx.exe' pack /o /d support\build\msix\content /nv /p app\windows\localsend_msix_helper.msix
 
       - name: Compile Windows App
         working-directory: app
@@ -179,10 +188,11 @@ jobs:
         run: |
           flutter pub get
           flutter pub get -C packages/localsend_isolates/rust_builder/cargokit/build_tool
+          cd app/macos && pod install
 
       - name: Compile macOS App
         working-directory: app
-        run: flutter build macos --release
+        run: flutter build macos
 
       - name: Package macOS DMG & ZIP
         run: |
@@ -219,6 +229,7 @@ jobs:
         run: |
           flutter pub get
           flutter pub get -C packages/localsend_isolates/rust_builder/cargokit/build_tool
+          cd app/ios && pod install
 
       - name: Compile iOS App (Unsigned)
         working-directory: app
@@ -240,40 +251,25 @@ jobs:
 
   publish_release:
     name: Publish GitHub Release
+    if: always()
     needs: [build_windows, build_android, build_linux, build_macos, build_ios]
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Download Windows artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: windows-binaries
-          path: release-assets
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - name: Download Android artifacts
+      - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
-          name: android-binaries
-          path: release-assets
+          path: raw-artifacts
 
-      - name: Download Linux artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: linux-binaries
-          path: release-assets
-
-      - name: Download macOS artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: macos-binaries
-          path: release-assets
-
-      - name: Download iOS artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: ios-binaries
-          path: release-assets
+      - name: Flatten and Prepare Release Assets
+        run: |
+          mkdir -p release-assets
+          find raw-artifacts -type f -exec cp {} release-assets/ \;
+          ls -lh release-assets/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -284,16 +280,12 @@ jobs:
           prerelease: false
           files: release-assets/*
           body: |
-            ## What's Changed
-            - Multi-platform release (${{ github.ref_name }})
-            - Secure local P2P file sharing across devices
-            - Optimized builds for Windows, Android, Linux, macOS, and iOS
+            ## MySender ${{ github.ref_name }} Release
+            Official multiplatform release of **MySender**.
 
-            ### Downloads:
-            - **Windows**: Setup installer (.exe) & Portable (.zip)
-            - **Android**: APKs (arm64, armv7, x86_64, universal) & AAB
-            - **Linux**: Standalone archive (.tar.gz)
-            - **macOS**: DMG installer & Portable ZIP
-            - **iOS**: Unsigned IPA (for Sideloading / AltStore)
-
-            **Full Changelog**: https://github.com/saferill/MySender/commits/${{ github.ref_name }}
+            ### Available Binaries:
+            - **Windows**: Setup Installer (`.exe`) & Portable (`.zip`)
+            - **Android**: APKs (`arm64-v8a`, `armeabi-v7a`, `x86_64`, `universal`) & App Bundle (`.aab`)
+            - **Linux**: Standalone archive (`.tar.gz`)
+            - **macOS**: DMG Installer (`.dmg`) & Portable (`.zip`)
+            - **iOS**: Unsigned IPA (`.ipa`) for AltStore / Sideloading
